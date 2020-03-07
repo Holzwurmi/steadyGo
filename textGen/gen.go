@@ -6,30 +6,51 @@ import (
 	"strings"
 )
 
+const startOfSentenceState = "_^_"
+
+type MarkovCluster struct {
+	root   *MarkovClusterNode
+	degree int
+}
+
 type MarkovClusterNode struct {
-	State      string
-	matrix     transitionMatrix
-	nextStates *MarkovClusterNode
+	state      string
+	nextStates []*NextState
 }
 
-type transitionMatrix struct {
-	probabilties []float64
+type NextState struct {
+	ocurrences int
+	node       *MarkovClusterNode
 }
 
-func NewMarkovByWordWithReaderSource(s *io.Reader, degree int) MarkovClusterNode {
+func (m *MarkovClusterNode) InsertState(occurence string) {
+}
+
+func (m *MarkovClusterNode) GetProbabilitiesForNextState() map[string]int {
+	return map[string]int{}
+}
+
+func NewMarkovByWordWithReaderSource(r *io.Reader, degree int) *MarkovCluster {
+	// lastDegreeStates := make([]string, degree-1)
+	m := &MarkovCluster{degree: degree, root: &MarkovClusterNode{state: startOfSentenceState, nextStates: []*NextState{}}}
+
+	// for
+	// buffer := make([]byte, 100)
+	// i, err := r.Read(buffer)
+
+	return m
+}
+
+func NewMarkovByRuneWithReaderSource(r *io.Reader, degree int) *MarkovCluster {
 	panic("Not implemented")
 }
 
-func NewMarkovByRuneWithReaderSource(s *io.Reader, degree int) MarkovClusterNode {
-	panic("Not implemented")
-}
-
-func NewMarkovByWordWithStringSource(s string, degree int) MarkovClusterNode {
+func NewMarkovByWordWithStringSource(s string, degree int) *MarkovCluster {
 	reader := io.Reader(strings.NewReader(s))
 	return NewMarkovByWordWithReaderSource(&reader, degree)
 }
 
-func NewMarkovByRuneWithStringSource(s string, degree int) MarkovClusterNode {
+func NewMarkovByRuneWithStringSource(s string, degree int) *MarkovCluster {
 	reader := io.Reader(strings.NewReader(s))
 	return NewMarkovByRuneWithReaderSource(&reader, degree)
 }
